@@ -1,0 +1,11 @@
+[userWeather]{
+    background-color: gray;
+}
+
+.loading-container{
+    display: none;
+}
+
+.grant-access-container{
+    display: none;
+}
