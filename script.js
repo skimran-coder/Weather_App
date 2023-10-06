@@ -96,6 +96,8 @@ function grantAccess(){
     
         // calling function to find weather by sending lat/long
         findWeather(latitude, longitude)
+        loadingScreen.style.display = 'flex';
+
     }
 }
 
@@ -104,7 +106,33 @@ function grantAccess(){
 
 // api call to get response
 async function findWeather(latitude, longitude){
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_key}`)
-    const result = await response.json()
-    console.log(result);
+    try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_key}`)
+        const result = await response.json()
+        displayWeather(result)
+    } catch (error) {
+        alert('error')
+    }
+}
+
+function displayWeather(result){
+    const weatherCity = document.querySelector('.weather-city')
+    const weatherCountryIcon = document.querySelector('.weather-country-icon')
+    const weatherDesc = document.querySelector('.weather-desc')
+    const weatherIcon = document.querySelector('.weather-icon')
+    const weatherTemp = document.querySelector('.weather-temp')
+    console.log(weatherCity);
+
+    // hide loading screen
+    loadingScreen.style.display = 'none';
+    // hide grant acces screen
+    grantAccessScreen.style.display = 'none';
+    // visible weather screen
+    weatherScreen.style.display = 'flex';
+
+    weatherCity.innerText = result?.name
+    weatherCountryIcon.src = `https://flagcdn.com/48x36/${result?.sys?.country.toLowerCase()}.png`
+    weatherDesc.innerText = result?.weather[0]?.description
+    weatherIcon.src = `https://openweathermap.org/img/w/${result?.weather[0]?.icon}.png`
+    weatherTemp.innerText = `${result?.main?.temp - 273}  °C`
 }
