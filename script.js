@@ -8,10 +8,11 @@ const searchScreen = document.querySelector('.search-weather-container')
 const weatherScreen = document.querySelector('.weather-container')
 const searchButton = document.querySelector('#search-btn')
 const searchBar = document.querySelector('#search-bar')
+const errorPage = document.querySelector('.error')
 
 const API_key = 'd7f8e1a8f9bf07da8fd33aa4650f59b2';
 
-let storedLocation;
+
 let currentTab = yourWeather
 checkAccess()
 
@@ -28,14 +29,15 @@ tabs.forEach((element)=>{
 function changeTab(e) {
     // when clicked on unclicked tab
     if (e.target != currentTab) {
-        currentTab.style.backgroundColor = "white";
-        e.target.style.backgroundColor = "gray";
+        currentTab.style.backgroundColor = "transparent";
+        e.target.style.backgroundColor = "#dbe2ef6f";
         currentTab = e.target;
     }
 
     // when on clicked on your weather tab
     if (e.target === yourWeather) {
         searchScreen.style.display = 'none';
+        errorPage.style.display = 'none';
         displayLoadingScreen()
         checkAccess()
     }
@@ -60,21 +62,25 @@ function displayLoadingScreen(){
 }
 
 // checking location access
-function checkAccess(){
+function checkAccess() {
+    // Check if coordinates are already in local storage
+    const storedLatitude = localStorage.getItem("latitude");
+    const storedLongitude = localStorage.getItem("longitude");
 
-    // checking if co-ordinates are already in local storage
-    if (storedLocation != undefined) {
-        console.log("when co-ords are in local storage");
+    if (storedLatitude && storedLongitude) {
+        // Coordinates are in local storage, use them
+        const latitude = parseFloat(storedLatitude);
+        const longitude = parseFloat(storedLongitude);
+        
         loadingScreen.style.display = 'flex';
-        findWeather(storedLocation.latitude, storedLocation.longitude)
-    }
-
-    // if co-ordinates are not in local storage
-    else{
+        findWeather(latitude, longitude);
+    } else {
+        // Coordinates are not in local storage, show access screen
         loadingScreen.style.display = 'none';
-        displayAccessScreen()
+        displayAccessScreen();
     }
 }
+
 
 // displaying access screen
 function displayAccessScreen(){
@@ -86,6 +92,8 @@ accessButton.addEventListener('click', grantAccess)
 // getting location when clicked on button
 function grantAccess(){
     if (navigator.geolocation) {
+        grantAccessScreen.style.display = 'none';
+        loadingScreen.style.display = 'flex';
         navigator.geolocation.getCurrentPosition(storeLocation)
     }
     else {
@@ -99,14 +107,12 @@ function grantAccess(){
         
         console.log(`${latitude} & ${longitude}`);
         // have to save co-ords in local storage??
-        storedLocation = {
-            latitude : latitude,
-            longitude : longitude,
-        }
+        localStorage.setItem("latitude", latitude);
+        localStorage.setItem("longitude", longitude);
     
         // calling function to find weather by sending lat/long
         findWeather(latitude, longitude)
-        loadingScreen.style.display = 'flex';
+        
 
     }
 }
@@ -128,6 +134,8 @@ async function findWeather(latitude, longitude){
 searchBar.addEventListener('keydown', (e) => {
     if (e.keyCode === 13 || e.key === 'Enter') {
     console.log('Enter key was pressed');
+    loadingScreen.style.display = 'flex';
+    weatherScreen.style.display = 'none'
     const userInput = searchBar.value
     getWeather(userInput)
     searchBar.value = "";
@@ -136,16 +144,26 @@ searchBar.addEventListener('keydown', (e) => {
 searchButton.addEventListener('click', takeInput)
 
 function takeInput(){
+    loadingScreen.style.display = 'flex';
+    weatherScreen.style.display = 'none'
     const userInput = searchBar.value
     getWeather(userInput)
     searchBar.value = "";
 
 }
 
+// api call using city name
 async function getWeather(userInput){
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userInput}&appid=${API_key}`)
-    const result = await response.json();
-    displayWeather(result)
+    try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userInput}&appid=${API_key}`)
+        const result = await response.json();
+        errorPage.style.display = 'none';
+        displayWeather(result)
+    } catch (error) {
+        loadingScreen.style.display = 'none';
+        weatherScreen.style.display = 'none'
+        errorPage.style.display = 'flex';
+    }
 }
 
 function displayWeather(result){
@@ -169,8 +187,9 @@ function displayWeather(result){
     weatherCountryIcon.src = `https://flagcdn.com/48x36/${result?.sys?.country.toLowerCase()}.png`
     weatherDesc.innerText = result?.weather[0]?.description
     weatherIcon.src = `https://openweathermap.org/img/w/${result?.weather[0]?.icon}.png`
-    weatherTemp.innerText = `${result?.main?.temp - 273}  °C`
-    windspeed.innerText = result?.wind?.speed
-    humidity.innerText = result?.main?.humidity
-    clouds.innerText = result?.clouds?.all
+    weatherTemp.innerText = `${(result?.main?.temp - 273).toFixed(2)} °C`;
+
+    windspeed.innerText = `${result?.wind?.speed}m/s`
+    humidity.innerText = `${result?.main?.humidity}%`
+    clouds.innerText = `${result?.clouds?.all}%`
 }
