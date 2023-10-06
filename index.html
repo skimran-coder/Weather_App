@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
     <title>Weather App</title>
 </head>
@@ -23,19 +27,21 @@
             <button class="grant-access-btn" type="button">grant access</button>
         </div>
 
-        <div class="loading-container">
-            <img src="assets/loading.gif" alt="" loading="lazy">
-            <p>loading</p>
-        </div>
-
         <div class="search-weather-container">
             <input type="text" name="search" id="search-bar" placeholder="Search for city..">
             <button type="button"><img src="assets/search.png" alt="" id="search-btn"></button>
         </div>
 
+        <div class="loading-container">
+            <img src="assets/loading.gif" alt="" loading="lazy">
+            <p>loading</p>
+        </div>
+
         <div class="weather-container">
-            <p class="weather-city"></p>
-            <img src="" alt="" class="weather-country-icon">
+            <div class="city-container">
+                <p class="weather-city"></p>
+                <img src="" alt="" class="weather-country-icon">
+            </div>
             <p class="weather-desc"></p>
             <img src="" alt="" class="weather-icon">
             <p class="weather-temp"></p>
@@ -57,6 +63,11 @@
                     <p class="clouds"></p>
                 </div>
             </div>
+        </div>
+
+        <div class="error">
+            <img src="assets/not-found.png" alt="">
+            <p>city not found</p>
         </div>
 
     </div>
