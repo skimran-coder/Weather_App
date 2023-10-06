@@ -6,12 +6,16 @@ const accessButton = document.querySelector('.grant-access-btn')
 const loadingScreen = document.querySelector('.loading-container')
 const searchScreen = document.querySelector('.search-weather-container')
 const weatherScreen = document.querySelector('.weather-container')
-
+const searchButton = document.querySelector('#search-btn')
+const searchBar = document.querySelector('#search-bar')
 
 const API_key = 'd7f8e1a8f9bf07da8fd33aa4650f59b2';
 
 let storedLocation;
 let currentTab = yourWeather
+checkAccess()
+
+
 
 
 
@@ -59,8 +63,10 @@ function displayLoadingScreen(){
 function checkAccess(){
 
     // checking if co-ordinates are already in local storage
-    if (false) {
-        console.log("will write condition if access already given");
+    if (storedLocation != undefined) {
+        console.log("when co-ords are in local storage");
+        loadingScreen.style.display = 'flex';
+        findWeather(storedLocation.latitude, storedLocation.longitude)
     }
 
     // if co-ordinates are not in local storage
@@ -93,6 +99,10 @@ function grantAccess(){
         
         console.log(`${latitude} & ${longitude}`);
         // have to save co-ords in local storage??
+        storedLocation = {
+            latitude : latitude,
+            longitude : longitude,
+        }
     
         // calling function to find weather by sending lat/long
         findWeather(latitude, longitude)
@@ -115,13 +125,38 @@ async function findWeather(latitude, longitude){
     }
 }
 
+searchBar.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13 || e.key === 'Enter') {
+    console.log('Enter key was pressed');
+    const userInput = searchBar.value
+    getWeather(userInput)
+    searchBar.value = "";
+}
+})
+searchButton.addEventListener('click', takeInput)
+
+function takeInput(){
+    const userInput = searchBar.value
+    getWeather(userInput)
+    searchBar.value = "";
+
+}
+
+async function getWeather(userInput){
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userInput}&appid=${API_key}`)
+    const result = await response.json();
+    displayWeather(result)
+}
+
 function displayWeather(result){
     const weatherCity = document.querySelector('.weather-city')
     const weatherCountryIcon = document.querySelector('.weather-country-icon')
     const weatherDesc = document.querySelector('.weather-desc')
     const weatherIcon = document.querySelector('.weather-icon')
     const weatherTemp = document.querySelector('.weather-temp')
-    console.log(weatherCity);
+    const windspeed = document.querySelector('.windspeed')
+    const humidity = document.querySelector('.humidity')
+    const clouds = document.querySelector('.clouds')
 
     // hide loading screen
     loadingScreen.style.display = 'none';
@@ -135,4 +170,7 @@ function displayWeather(result){
     weatherDesc.innerText = result?.weather[0]?.description
     weatherIcon.src = `https://openweathermap.org/img/w/${result?.weather[0]?.icon}.png`
     weatherTemp.innerText = `${result?.main?.temp - 273}  °C`
+    windspeed.innerText = result?.wind?.speed
+    humidity.innerText = result?.main?.humidity
+    clouds.innerText = result?.clouds?.all
 }
