@@ -134,8 +134,9 @@ async function findWeather(latitude, longitude){
 searchBar.addEventListener('keydown', (e) => {
     if (e.keyCode === 13 || e.key === 'Enter') {
     console.log('Enter key was pressed');
-    loadingScreen.style.display = 'flex';
     weatherScreen.style.display = 'none'
+    errorPage.style.display = 'none';
+    loadingScreen.style.display = 'flex';
     const userInput = searchBar.value
     getWeather(userInput)
     searchBar.value = "";
@@ -144,6 +145,7 @@ searchBar.addEventListener('keydown', (e) => {
 searchButton.addEventListener('click', takeInput)
 
 function takeInput(){
+    errorPage.style.display = 'none';
     loadingScreen.style.display = 'flex';
     weatherScreen.style.display = 'none'
     const userInput = searchBar.value
@@ -180,6 +182,8 @@ function displayWeather(result){
     loadingScreen.style.display = 'none';
     // hide grant acces screen
     grantAccessScreen.style.display = 'none';
+    // hide error screen
+    errorPage.style.display = 'none';
     // visible weather screen
     weatherScreen.style.display = 'flex';
 
