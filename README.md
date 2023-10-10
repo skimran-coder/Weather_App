@@ -1,4 +1,3 @@
-```markdown
 # Weather App README
 
 ## Overview
@@ -81,4 +80,3 @@ To run the Weather App locally, follow these steps:
 This Weather App was inspired by the idea of **Love Babbar**. I, **Sk. Imran Hussain** recreated it by following their guidance and watching their course. I want to express my gratitude for their valuable mentorship and guidance in building this application.
 
 Feel free to customize and enhance the Weather App according to your preferences. Enjoy using the app and exploring weather conditions!
-```
