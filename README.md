@@ -1,4 +1,6 @@
-# Weather App README
+# Weather App
+
+![screenshot](assets/screenshot.png)
 
 ## Overview
 
