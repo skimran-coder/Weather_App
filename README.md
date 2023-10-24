@@ -6,6 +6,10 @@
 
 The Weather App is a simple web application that allows users to check the weather for their current location or search for the weather in a specific city. It provides weather information such as temperature, description, wind speed, humidity, and cloud cover. This README provides an overview of the app's structure, features, and usage.
 
+## Check Weather
+
+You can try the live demo to check your weather [here](https://skimran-coder.github.io/Weather_App/).
+
 ## Table of Contents
 
 - [Features](#features)
